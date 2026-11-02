@@ -1,172 +1,143 @@
 # StreamLens
 
-**Understand Java Stream API execution, one step at a time.**
+StreamLens is a small project I've been working on to make Java Stream API easier to understand.
 
-StreamLens is an interactive Java Stream API visualizer that helps developers understand how data flows through a stream pipeline. It analyses Java source code, identifies stream operations, executes the pipeline and presents intermediate results alongside explanations of each operation.
+The idea is simple: write a Java Stream pipeline, run it, and see what happens at each step. Instead of looking only at the final result, you can follow how elements move through operations like `filter()`, `map()`, `sorted()` and `collect()`.
 
-The goal is to make Java Stream API behaviour easier to understand, debug and learn.
+It also provides explanations for individual operations, along with the intermediate results generated during execution.
 
-## Features
+## What it does
 
-- **Pipeline Analysis:** Identifies Java Stream API pipelines and their operations.
-- **Step-by-Step Execution:** Displays how data changes as it passes through intermediate operations.
-- **Intermediate Results:** Shows the values produced at different stages of a pipeline.
-- **Multiple Pipelines:** Analyses independent stream pipelines within a Java program.
-- **Operation Explanations:** Provides descriptions of intermediate and terminal operations.
-- **AI-Assisted Explanations:** Optional Gemini integration for additional natural-language explanations.
-- **Interactive Interface:** Explore pipeline execution and individual operation results through a web interface.
+- Takes Java code containing Stream API pipelines as input.
+- Identifies stream operations in the code.
+- Compiles and executes the pipeline.
+- Shows the intermediate results at different stages.
+- Explains what each operation is doing.
+- Supports multiple independent pipelines.
+- Can use Gemini for additional explanations (optional).
 
-## Supported Operations
+## Supported operations
 
-StreamLens supports commonly used Java Stream API operations, including:
+Some of the operations currently supported are:
 
-| Category           | Operations                                              |
-| ------------------ | ------------------------------------------------------- |
-| Filtering          | `filter()`                                              |
-| Transformation     | `map()`, `flatMap()`                                    |
-| Sorting            | `sorted()`                                              |
-| Duplicate handling | `distinct()`                                            |
-| Limiting           | `limit()`, `skip()`                                     |
-| Inspection         | `peek()`                                                |
-| Collection         | `collect()`                                             |
-| Grouping           | `groupingBy()`, `partitioningBy()`                      |
-| Aggregation        | `reduce()`, `count()`, `sum()`, `average()`             |
-| Matching           | `anyMatch()`, `allMatch()`, `noneMatch()`               |
-| Finding            | `findFirst()`, `findAny()`                              |
-| Comparison         | `min()`, `max()`                                        |
-| Primitive streams  | `mapToInt()`, `mapToLong()`, `mapToDouble()`, `boxed()` |
+| Category | Operations |
+|---|---|
+| Filtering | `filter()` |
+| Transformation | `map()`, `flatMap()` |
+| Sorting | `sorted()` |
+| Duplicate removal | `distinct()` |
+| Limiting | `limit()`, `skip()` |
+| Inspection | `peek()` |
+| Collection | `collect()` |
+| Grouping | `groupingBy()`, `partitioningBy()` |
+| Aggregation | `reduce()`, `count()`, `sum()`, `average()` |
+| Matching | `anyMatch()`, `allMatch()`, `noneMatch()` |
+| Finding | `findFirst()`, `findAny()` |
+| Comparison | `min()`, `max()` |
+| Primitive streams | `mapToInt()`, `mapToLong()`, `mapToDouble()`, `boxed()` |
 
-Support depends on the operation and pipeline structure. Additional operations and Java constructs can be introduced progressively.
+Support for some operations depends on the pipeline structure and input code.
 
-## Technology Stack
-
-**Backend**
+## Tech stack
 
 - Java 17
 - Spring Boot 3
 - JavaParser
-- Maven
 - Java Stream API
+- Maven
+- HTML, CSS and JavaScript
+- Gemini API (optional)
 
-**Frontend**
+## How it works
 
-- HTML
-- CSS
-- JavaScript
+The frontend sends the Java code to the Spring Boot backend.
 
-**Additional Integration**
+JavaParser is used to analyse the source code and identify the Stream API pipelines. The application then extracts the operations and prepares the code for execution.
 
-- Gemini API for optional enhanced explanations
-- Dynamic Java compilation and subprocess execution
+The generated Java code is compiled using `javac` and executed in a separate JVM process. StreamLens captures the results at different stages and sends them back to the frontend.
 
-## Architecture
+The frontend displays the pipeline, its operations and the corresponding results.
 
-StreamLens follows a backend-driven architecture.
+The frontend is part of the Spring Boot application itself, so there is no separate frontend server or build process.
 
-1. Theupported operations and constructs an execution representation.
-2. Java source is compiled an frontend submits Java source code to the Spring Boot application.
-3. JavaParser analyses the source and identifies stream pipelines.
-4. The application extracts sd executed in a separate process.
-5. Intermediate execution results are collected and associated with pipeline operations.
-6. The analysis results are returned to the frontend for visualisation.
+## Running locally
 
-The application serves its frontend directly through Spring Boot, so a separate frontend build or hosting service is not required.
+### Requirements
 
-## Getting Started
-
-### Prerequisites
-
-- JDK 17 or later (a full JDK is required).
-- Maven 3.8 or later, or the included Maven Wrapper.
+- JDK 17 or later (a full JDK is required because the application uses `javac`).
+- Maven 3.8+ or Maven Wrapper.
 - Git.
 
-A full JDK is necessary because StreamLens uses `javac` and `java` to compile and execute generated Java source code.
-
-### Clone the Repository
+### Clone the project
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/streamlens.git
 cd streamlens
 ```
 
-### Build the Application
+### Build
 
-Using Maven Wrapper:
-
-**Windows**
+On Windows:
 
 ```bash
 mvnw.cmd clean package
 ```
 
-**Linux / macOS**
+On Linux/macOS:
 
 ```bash
 ./mvnw clean package
 ```
 
-Alternatively:
+Or use Maven directly:
 
 ```bash
 mvn clean package
 ```
 
-### Run the Application
+### Start the application
 
 ```bash
 mvn spring-boot:run
 ```
 
-Once the application starts, open:
+Open the application in your browser:
 
-[http://localhost:8080](http://localhost:8080)
+http://localhost:8080
 
-The frontend is served directly by Spring Boot.
+## Gemini configuration (optional)
 
-## Optional AI Integration
+Gemini can be enabled to provide additional explanations for the analysed pipelines.
 
-StreamLens can use the Gemini API to provide additional natural-language explanations.
+Get an API key from [Google AI Studio](https://aistudio.google.com/apikey).
 
-To enable this integration:
-
-1. Obtain an API key from [Google AI Studio](https://aistudio.google.com/apikey).
-2. Configure the `GEMINI_API_KEY` environment variable.
-
-**Windows PowerShell**
+On Windows PowerShell:
 
 ```powershell
 $env:GEMINI_API_KEY="your-api-key"
 .\mvnw.cmd spring-boot:run
 ```
 
-**Linux / macOS**
+On Linux/macOS:
 
 ```bash
 export GEMINI_API_KEY="your-api-key"
 ./mvnw spring-boot:run
 ```
 
-The core pipeline analysis and execution functionality is designed to work independently of the optional AI integration.
+The application can still perform its core analysis without a Gemini API key.
 
-Never commit API keys or other credentials to the repository.
+Please don't commit API keys to the repository.
 
 ## API
 
-### Analyse Java Code
-
-**Endpoint**
+The main analysis endpoint is:
 
 ```http
 POST /api/analyze
 ```
 
-**Content-Type**
-
-```http
-application/json
-```
-
-**Example Request**
+Example request:
 
 ```json
 {
@@ -174,70 +145,35 @@ application/json
 }
 ```
 
-The response contains the extracted pipeline information, operations, execution results and available explanations.
+The response includes the extracted pipelines, operations, execution results and explanations.
 
 ## Deployment
 
-StreamLens can be deployed as a Docker-based Spring Boot web application.
+The application can be deployed as a single Spring Boot web service.
 
-The deployment requires a full JDK because Java compilation takes place at runtime.
+I've been using Render for the initial deployment. The application needs a full JDK at runtime because it compiles Java code dynamically.
 
-For a Render deployment:
+For a Docker deployment, use a JDK-based image rather than a JRE-only image.
 
-1. Push the project to a GitHub repository.
-2. Create a new Web Service in [Render](https://render.com).
-3. Connect the GitHub repository.
-4. Select Docker as the runtime.
-5. Configure the appropriate environment variables.
-6. Deploy the application.
+Render's free service is useful for an initial deployment, although it can sleep after a period of inactivity.
 
-The application can serve both its frontend and backend through a single public URL.
+## A note about execution
 
-For initial deployments, Render's free hosting option can be used subject to its resource limits and availability.
+StreamLens compiles and executes Java code submitted through the application. It currently uses a separate operating-system process for execution, along with timeout and resource controls.
 
-## Execution and Security Considerations
+This is an area that needs further hardening before unrestricted public use. Process-level execution and source-code validation alone should not be considered a complete security sandbox.
 
-StreamLens compiles and executes Java source code supplied through its analysis interface.
+## What's next
 
-Execution currently uses a separate operating-system process with execution timeouts and resource controls. Source validation and restrictions on unsupported Java functionality provide additional safeguards.
+There are a few things I'd like to improve as the project develops:
 
-These measures should not be considered equivalent to a hardened multi-tenant sandbox. Untrusted public execution requires additional operating-system or container-level isolation, resource enforcement and security testing.
-
-## Project Structure
-
-```text
-streamlens/
-│
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/streamlens/
-│       │       ├── controller/
-│       │       ├── service/
-│       │       ├── model/
-│       │       └── ...
-│       │
-│       └── resources/
-│           ├── static/
-│           │   └── index.html
-│           └── application.properties
-│
-├── pom.xml
-├── Dockerfile
-├── .gitignore
-└── README.md
-```
-
-## Future Enhancements
-
-- Expanded Java language and Stream API support.
+- Better support for complex Java code and custom objects.
+- More Stream API operations.
 - Improved pipeline visualisation.
-- Detailed execution statistics.
-- Interactive operation-level explanations.
-- Support for custom Java classes and complex data structures.
-- Additional examples and interview practice problems.
-- Enhanced execution isolation and security controls.
+- Better handling of intermediate results.
+- More examples for common Java interview problems.
+- Improved execution isolation and security.
 
 ---
 
-**StreamLens — Explore. Execute. Understand.**
+I'm continuing to improve StreamLens as I work on it. Suggestions and feedback are welcome.
